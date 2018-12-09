@@ -4,57 +4,57 @@
 // Objects are nice because they allow up to keep all the relevant
 // info about an item in one place.
 
-var Mario;
+	var Mario;
 ////////////////////////////////////////////////////////////////////
 
 
 window.onload = init; // calls the function named "init"
 // declare the background image
-var bgImage = new Image();
+	var bgImage = new Image();
 
 
-// Is called when the window loads;
-function init() {
-	
-	// Initialize Mario Object
-	// TODO: Put Mario on the ground instead of the cloud
-	Mario = {
-		x: 793,
-		y: 615,
-		w: 50,
-		h: 80,
-		JumpSound: new Audio('jump.wav'),
-		Image: (function() {
-			var temp = new Image();
-			temp.src = "mario1.png";
-			return temp;})(),
-		moving: "no",
-		timer: "",
-		timerInterval: 10
-	};
+	// Is called when the window loads;
+	function init() {
 
-	bgImage.src = "marioBG.jpg";
-	draw();
+		// Initialize Mario Object
+		// TODO: Put Mario on the ground instead of the cloud
+		Mario = {
+			x: 793,
+			y: 615,
+			w: 50,
+			h: 80,
+			JumpSound: new Audio('jump.wav'),
+			Image: (function() {
+				var temp = new Image();
+				temp.src = "mario1.png";
+				return temp;})(),
+			moving: "no",
+			timer: "",
+			timerInterval: 10,
+			timerInterval_2: 200
+		};
 
-	// TODO: (OPTIONAL) set mario_08.wav as background music
-	var bgMusic = new Audio();
-	bgMusic.src = "mario_08.wav";
-	bgMusic.play();
-}
+		bgImage.src = "marioBG.jpg";
+		draw();
+
+		// TODO: (OPTIONAL) set mario_08.wav as background music
+
+		var bgMusic = new Audio('mario_08.wav');
+		bgMusic.play();
 
 ////////////////////////////////////////////////////////////////////
 
-function draw() {
+	function draw() {
 
-	// Get Drawing Area
-	var ctx = document.getElementById("mario_canvas").getContext("2d");
-	
-	// If you want to display images on the canvas when it is initially
-	// loaded, you must do it this way
-	bgImage.onload = function(){
-		ctx.drawImage(bgImage, 0, 0);
+		// Get Drawing Area
+		var ctx = document.getElementById("mario_canvas").getContext("2d");
 
-    }
+		// If you want to display images on the canvas when it is initially
+		// loaded, you must do it this way
+		bgImage.onload = function(){
+			ctx.drawImage(bgImage, 0, 0);
+
+		}
 
 	/*
 	 * TODO: Draw Mario's initial image
@@ -106,68 +106,64 @@ function draw() {
 	 *
 	 */
 
-	var render_2 = function () {
-        ctx.drawImage(bgImage, 0, 0);
-        moveSideToSide();
-	}
+    document.body.onkeydown = function(e) {  // listen for a key
 
-	function moveSideToSide() {
-        var step = 1;
-
-        if (mario.x > 792 && Mario.moving == "no") {
-            Mario.Image.src = "mario_right.png";
-            ctx.drawImage(Mario.Image, Mario.x, Mario.y, Mario.w, Mario.h);
-            Mario.x = Mario.x + step;
-
-        } else if (mario.x <= 792 && Mario.moving == "no") {
-            Mario.Image.src = "mario_left.png";
-            ctx.drawImage(Mario.Image, Mario.x, Mario.y, Mario.w, Mario.h);
-            Mario.x = Mario.x - step;
+        e = event || window.event;             // any kind of event
+        var keycode = e.charCode || e.keyCode; // any kind of key
+        console.log(keycode);
+        // The user wants Mario to jump:
+        if(keycode === 13 && Mario.moving == "no") {
+            Mario.timer = setInterval(render, Mario.timerInterval);
         }
+
+        if(keycode === 37) {
+            Mario.Image.src = "mario_left.png";
+            ctx.drawImage(bgImage,0,0);
+            ctx.drawImage(Mario.Image, Mario.x, Mario.y, Mario.w, Mario.h);
+            if(Mario.x >= 5) {
+                Mario.x -= 5;
+            }
+
+        }
+
+        if(keycode === 39) {
+            Mario.Image.src = "mario_right.png";
+            ctx.drawImage(bgImage,0,0);
+            ctx.drawImage(Mario.Image, Mario.x, Mario.y, Mario.w, Mario.h);
+            if(Mario.x < 1155) {
+                Mario.x += 5;
+            }
+        }
+
     }
 
-
-	document.body.onkeydown = function(e) {  // listen for a key
-
-    	e = event || window.event;             // any kind of event
-    	var keycode = e.charCode || e.keyCode; // any kind of key
-		console.log(keycode);
-		// The user wants Mario to jump:
-    	if(keycode === 13 && Mario.moving == "no") {  
-        	Mario.timer = setInterval(render, Mario.timerInterval); 
-    	}
-
-
-
-    }
 
     /* TODO:
      * TODO: Capture keycodes for L and R. In each, set a timeout that calls a function
      * TODO: to face Mario forward after 200 ms. HINT: setTimeout(function, timeInMilliSecs)
      */
-   	document.body.onkeyup = function(e) {  // listen for a key
 
-    	e = event || window.event;				//any kind of event
-    	var keycode = e.charCode || e.keyCode;	//any kind of key
-    	console.log(keycode);
-		// The user wants Mario to move left or right;
-    	if(keycode === 76 && Mario.moving == "no") {
-    		Mario.timer = setInterval(render_2, Mario.timerInterval);
-		} else if (keycode === 82 && Mario.moving == "no") {
-    		Mario.timer = setInterval(render_2, Mario.timerInterval);
+		document.body.onkeyup = function(e) {  // listen for a key
+
+			e = event || window.event;             // any kind of event
+			var keycode = e.charCode || e.keyCode; // any kind of key
+			console.log(keycode);
+
+			if(keycode === 37 || keycode === 39) {
+				setTimeout(faceForward, 200);
+			}
+
 		}
 
+
+/*
+ * TODO: Face Mario forward. Do not forget to draw the background image first
+ */
+    function faceForward() {
+        Mario.Image.src = "mario1.png";
+        ctx.drawImage(bgImage,0,0);
+        ctx.drawImage(Mario.Image,Mario.x,Mario.y,Mario.w,Mario.h);
     }
 
 
-    /*
-     * TODO: Face Mario forward. Do not forget to draw the background image first
-     */
-   /* function faceForward() {
-        var ctx = document.getElementById("mario_canvas").getContext("2d");
-
-        bgImage.onload = function(){
-            ctx.drawImage(bgImage, 0, 0);
-    }
-	*/
 } // close draw() 
