@@ -38,9 +38,9 @@ window.onload = init; // calls the function named "init"
 		draw();
 
 		// TODO: (OPTIONAL) set mario_08.wav as background music
-
-		var bgMusic = new Audio('mario_08.wav');
-		bgMusic.play();
+        var bgMusic = new Audio('mario_08.wav');
+        bgMusic.play();
+	}
 
 ////////////////////////////////////////////////////////////////////
 
